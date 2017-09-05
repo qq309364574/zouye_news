@@ -1,5 +1,5 @@
 import React, { Component,PropTypes } from 'react';
-import {Form,Card,Input,Buttom,notification,message} from 'antd'
+import {Form,Card,Input,Button,notification,message} from 'antd'
 import axios from 'axios'
 const FormItem = Form.Item
 class NewsComments extends Component {
@@ -22,23 +22,38 @@ class NewsComments extends Component {
             })
     }
     handleClick = () => {
+        let {uniquekey} = this.props
         let userid = localStorage.getItem("userId")
         if(!userid){
             message.info('请先登陆');
             return
         }
+        let url = `http://newsapi.gugujiankong.com/Handler.ashx?action=uc&userid=${userid}&uniquekey=${uniquekey}`
+        axios.get(url)
+            .then(response=>(
+                message.success('收藏成功') 
+            ))
+    } 
+    handleSubmit = () => {
+        let userid = localStorage.getItem("userId")
+        let {comment} = this.props.form.getFieldsValue()
+        console.log(comment)
+        if(!userid){
+            message.info('请先登陆');
+            return
+        }else if(!comment){
+            message.info('请输入内容');
+            return
+        }
         let {uniquekey} = this.props
-        let {commnet} = this.props.form.getFieldsValue()
-        let url = `http://newsapi.gugujiankong.com/Handler.ashx?action=comment&userid=${userid}&uniquekey=${uniquekey}&commnet=${commnet}`
+        
+        let url = `http://newsapi.gugujiankong.com/Handler.ashx?action=comment&userid=${userid}&uniquekey=${uniquekey}&commnet=${comment}`
         axios.get(url)
             .then(response=>(
                 this.update(),
                 this.props.form.resetFields(),
                 notification.success({message: '提交成功!'})
             ))
-    } 
-    handleSubmit = () => {
-
     }
     render() {
         let { getFieldDecorator } = this.props.form;
@@ -56,8 +71,8 @@ class NewsComments extends Component {
                             getFieldDecorator('comment')(<Input type="textarea"/>)
                         }
                     </FormItem>
-                    <Buttom type='primary' htmlType="submit"></Buttom>
-                    <Buttom type='primary' onClick={this.handleClick}></Buttom>
+                    <Button type='primary' htmlType="submit">提交</Button>&nbsp;
+                    <Button type='primary' onClick={this.handleClick}>收藏</Button>
                 </Form>
             </div>
         );

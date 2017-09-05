@@ -74,9 +74,9 @@ class NewsHeader extends Component {
                     <Link to='/user_center'>
                         <Button type="dashed">个人中心</Button>
                     </Link>&nbsp;&nbsp;
-                    <Link to='/'>
+                    
                         <Button onClick={this.logOut}>退出</Button>
-                    </Link>
+                    
                 </Menu.Item>
             )
             :(
